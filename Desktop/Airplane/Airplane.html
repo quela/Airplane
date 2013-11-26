@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+	canvas {
+		padding-left: 0;
+   	 	padding-right: 0;
+   		margin-left: auto;
+   		margin-right: auto;
+  		display: block;
+  		background-color:green;
+	}
+	</style>
+</head>
+<body>
+
+<div>
+<canvas id="myCanvas" width="904" height="550p" style="border: 1px solid black;"></canvas>
+</div>
+
+<script type="text/javascript">
+
+	canvas = document.getElementById("myCanvas");
+	ctx = canvas.getContext("2d");
+
+	var x = 50;
+	var y = 50;
+	isX = false;
+	isY = false;
+	var wallX = canvas.width;
+	var wallY = 0 ;
+
+	var update = 15;
+
+	var directions = {
+		left: -1*update,
+		right: +1*update,
+		down: +1*update,
+		up: -1*update
+	}
+
+	function Plane(){
+		this.draw= function(x,y){
+			this.x = x;
+			this.y = y;
+
+		ctx.beginPath();
+		ctx.moveTo(this.x,this.y);
+		ctx.lineTo(this.x,this.y+70);
+		ctx.stroke();
+
+		}
+	}
+
+	function getRandomNumber(min,max){
+		return (Math.random() * (max - min) + min)|0;
+	}
+	console.log(getRandomNumber(0, canvas.height));
+
+	wallY = 156;
+
+	function getRandomWall(){
+		this.line1 = function(x){
+
+			ctx.beginPath();
+			ctx.moveTo(wallX, 0);
+			ctx.lineTo(wallX, wallY);
+			ctx.stroke();
+			console.log(canvas.width-wallX);
+		}
+	}
+	
+	var plane = new Plane();
+	plane.draw(x,y);
+	 var wall = new getRandomWall();
+	 wall.line1();
+
+	function animationFrame()
+	{
+		//START animaciq na samoleta
+		ctx.clearRect(0,0, canvas.width, canvas.height);
+
+		plane.draw(x,y);
+
+		window.onkeydown = function(ev){
+
+			//ako e natisnata <--
+			if(ev.keyCode==37 && plane.x>update) 
+			{
+				x  += directions.left;
+		
+			}
+
+			//ako e natisnata ^
+			else if(ev.keyCode==38 && plane.y > update)
+			{ 
+				y  += directions.up;
+			}
+
+			//ako e natisnata -->
+			else if(ev.keyCode==39 && plane.x < canvas.width-update)
+			{ 
+				x += directions.right;
+			}
+
+			//ako e natisnata dolna strelka
+			else if(ev.keyCode==40 && plane.y+70 < canvas.height-update)
+			{ 
+				y += directions.down;
+			}
+			else console.log("Not such a function");
+		}
+		// STOP animaciq na samoleta
+
+		wall.line1(wallX);
+		wallX -= 2;
+		
+
+
+		requestAnimationFrame(animationFrame);	
+
+	}
+
+	requestAnimationFrame(animationFrame);	
+
+</script>
+
+</body>
+</html>
