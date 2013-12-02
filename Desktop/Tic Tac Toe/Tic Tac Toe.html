@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	
+	<title>Tic Tac Toe</title>
+
+	<style type="text/css">
+
+	html {
+		background-color:black;
+	}
+
+	table.center {
+		margin-left: auto;
+		margin-right: auto;
+		border-width:5px;
+		border-color:green;
+		border-collapse: collapse;
+  		border-spacing: 0;
+	}
+
+	td {
+	padding : 40px;
+	border-width:5px;
+	border-color:green;
+	}
+
+	span {
+		color:blue;
+		font-size:40px;
+	}
+
+	</style>
+
+</head>
+<body>
+
+<table border="1" class="center">
+	<tr>
+		<td id="sqr1"></td>
+		<td id="sqr2"></td>
+		<td id="sqr3"></td>
+	</tr>
+	<tr>
+		<td id="sqr4"></td>
+		<td id="sqr5"></td>
+		<td id="sqr6"></td>
+	</tr>
+	<tr>
+		<td id="sqr7"></td>
+		<td id="sqr8"></td>
+		<td id="sqr9"></td>
+	</tr>
+</table>
+
+<script type="text/javascript">
+	var arr = [ document.getElementById("sqr1") , document.getElementById("sqr2") , document.getElementById("sqr3") , document.getElementById("sqr4") , document.getElementById("sqr5") , document.getElementById("sqr6") , document.getElementById("sqr7") , document.getElementById("sqr8") , document.getElementById("sqr9")];
+
+	var player1 = "<span>x</span>";
+	var player2 = "<span>o</span>";
+	var playerTurn = player1;
+	var i = 0;
+
+	function putElement()
+	{
+		//Changes playerTurn
+		if(i%2==0)  playerTurn = player1;
+		else playerTurn = player2;
+
+			//If there is element in sqare
+			if((this.innerHTML == player1 || this.innerHTML ==player2))
+			{
+			 console.log("There is already an element in this square!");
+			}
+			
+			//if there is not element in square
+			else
+			{ 
+				$(this).append(playerTurn);
+			}
+
+		//Proverka za 1 red
+		var player1row1 = (arr[0].innerHTML == player1 && arr[1].innerHTML == player1 && arr[2].innerHTML == player1);
+		var player2row1 = (arr[0].innerHTML == player2 && arr[1].innerHTML == player2 && arr[2].innerHTML == player2);
+
+		//proverka za 2 red 
+		var player1row2 = (arr[3].innerHTML == player1 && arr[4].innerHTML == player1 && arr[5].innerHTML == player1);
+		var player2row2 = (arr[3].innerHTML == player2 && arr[4].innerHTML == player2 && arr[5].innerHTML == player2);
+
+		//proverka za 3 red
+		var player1row3 = (arr[6].innerHTML == player1 && arr[7].innerHTML == player1 && arr[8].innerHTML == player1);
+		var player2row3 = (arr[6].innerHTML == player2 && arr[7].innerHTML == player2 && arr[8].innerHTML == player2);
+
+		//proverka za 1 kolona
+		var player1column1 = (arr[0].innerHTML == player1 && arr[3].innerHTML == player1 && arr[6].innerHTML == player1);
+		var player2column1 = (arr[0].innerHTML == player2 && arr[3].innerHTML == player2 && arr[6].innerHTML == player2);
+
+		//proverka za 2 kolona
+		var player1column2 = (arr[1].innerHTML == player1 && arr[4].innerHTML == player1 && arr[7].innerHTML == player1);
+		var player2column2 = (arr[1].innerHTML == player2 && arr[4].innerHTML == player2 && arr[7].innerHTML == player2);
+
+		//proverka za 3 kolona
+		var player1column3 = (arr[2].innerHTML == player1 && arr[5].innerHTML == player1 && arr[8].innerHTML == player1);
+		var player2column3 = (arr[2].innerHTML == player2 && arr[5].innerHTML == player2 && arr[8].innerHTML == player2);
+
+		//proverka po diagonal 1
+		var player1diagonal1 = (arr[0].innerHTML == player1 && arr[4].innerHTML == player1 && arr[8].innerHTML == player1);
+		var player2diagonal1 = (arr[0].innerHTML == player2 && arr[4].innerHTML == player2 && arr[8].innerHTML == player2);
+
+		//proverka po diagonal 2
+		var player1diagonal2 = (arr[2].innerHTML == player1 && arr[4].innerHTML == player1 && arr[6].innerHTML == player1);
+		var player2diagonal2 = (arr[2].innerHTML == player2 && arr[4].innerHTML == player2 && arr[6].innerHTML == player2);
+
+		//proverka dali ima 3 podredeni elementa
+
+		if(player1row1 || player1row2 || player1row3 || player1column1 || player1column2 || player1column3 || player1diagonal1 || player1diagonal2)
+		{ 
+			$('td').empty();
+			alert("Player1 wins!");
+
+		}
+		else if(player2row1 || player2row2 || player2row3 || player2column1 || player2column2 || player2column3 || player2diagonal1 || player2diagonal2)
+		{ 
+			$('td').empty();
+			alert("Player2 wins!");
+		}
+		i+=1;
+
+	}
+
+	
+			
+		$('td').on("click", putElement);
+
+</script>
+
+</body>
+</html>
