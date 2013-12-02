@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+
+	canvas {
+		padding-left: 0;
+   	 	padding-right: 0;
+   		margin-left: auto;
+   		margin-right: auto;
+  		display: block;
+  		background-image:url("background.jpg");
+
+	}
+
+	#the-plane {
+		display:none;
+
+		#hide {
+			display:none;
+		}
+	}
+	</style>
+
+
+</head>
+<body>
+
+<span id="score">1</span>
+
+<canvas id="myCanvas" width="904" height="550p" style="border: 1px solid black;"></canvas>
+
+<img src="plane.png" id="the-plane">
+<object height="0" width="0" data="theme.mp3" id="hide"></object>
+<script type="text/javascript">
+
+	canvas = document.getElementById("myCanvas");
+	ctx = canvas.getContext("2d");
+
+
+
+	var x = 50;
+	var y = 50;
+	isX = false;
+	isY = false;
+	var i = 0;
+
+	var arr = [];
+	var arr2 = [];
+
+	var lineLength = [];
+
+	var update = 15;
+
+	var directions = {
+		left: -1*update,
+		right: +1*update,
+		down: +1*update,
+		up: -1*update
+	}
+
+	
+
+
+
+	function Plane(){
+		this.draw= function(x,y){
+			this.x = x;
+			this.y = y;
+
+		var plane = document.getElementById("the-plane");
+		ctx.beginPath();
+		ctx.moveTo(this.x,this.y);
+		ctx.drawImage(plane,this.x,this.y);
+		ctx.stroke();
+
+		}
+	}
+
+	function getRandomNumber(min,max){
+		return (Math.random() * (max - min) + min)|0;
+	}
+
+
+	function Wall(x,y){
+		this.x=x ;
+		this.y = y;
+
+		this.move = function(){
+			this.x -= 3.3;
+		}
+
+		this.draw = function(ctx){
+			ctx.save();
+			ctx.lineWidth = 3;
+			ctx.beginPath();
+			ctx.moveTo(this.x, 0);
+			ctx.lineTo(this.x, this.y);
+			ctx.stroke();
+			for(i=0 ; i<106 ; i++)
+			{
+			if(plane.x+i == this.x && plane.y+20<this.y) {
+				alert("You lose!");
+				location.reload();
+			}
+			}
+			ctx.restore();
+		}
+	}
+
+		function Wall2(x,y){
+		this.x= x ;
+		this.y = y;
+
+		this.move = function(){
+			this.x -= 4;
+		}
+
+		this.draw = function(ctx){
+			ctx.save();
+			ctx.lineWidth = 3;
+			ctx.beginPath();
+			ctx.moveTo(this.x+400, canvas.height);
+			ctx.lineTo(this.x+400, this.y);
+			ctx.stroke();
+			for(i=0 ; i<106 ; i++)
+			{
+			if(plane.x-400+i == this.x && plane.y+40>this.y) {
+				alert("You lose!");
+				location.reload();
+			}
+			}
+			ctx.restore();
+		}
+	}
+
+
+	
+	var plane = new Plane();
+	plane.draw(x,y);
+
+
+	function animationFrame()
+	{
+		//START animaciq na samoleta
+		ctx.clearRect(0,0, canvas.width, canvas.height);
+
+		plane.draw(x,y);
+
+		for(var i = 0; i< arr.length; i++){
+			arr[i].move();
+			arr[i].draw(ctx);
+		}
+
+		for(var j = 0; j< arr2.length; j++){
+			arr2[j].move();
+			arr2[j].draw(ctx);
+		}
+
+		i += 1;
+
+		//STOP animaciq na stenite
+
+		
+		requestAnimationFrame(animationFrame);	
+
+	}
+	window.onkeydown = function(ev){
+		//ako e natisnata <--
+		if(ev.keyCode==37 && plane.x>update) 
+		{
+			x  += directions.left;
+	
+		}
+
+		//ako e natisnata ^
+		else if(ev.keyCode==38 && plane.y > update)
+		{ 
+			y  += directions.up;
+		}
+
+		//ako e natisnata -->
+		else if(ev.keyCode==39 && plane.x < canvas.width-update-110)
+		{ 
+			x += directions.right;
+		}
+
+		//ako e natisnata dolna strelka
+		else if(ev.keyCode==40 && plane.y+70 < canvas.height-update+30)
+		{ 
+			y += directions.down;
+		}
+	}
+
+	requestAnimationFrame(animationFrame);	
+		
+		setInterval(function(){
+
+
+		var x = ctx.canvas.width;
+		var y = getRandomNumber(100, canvas.height-100);
+
+		var wall = new Wall(x, y);
+		arr.push(wall);
+		var wall2 = new Wall2(x,y);
+		arr2.push(wall2);
+
+	}, 4000);
+</script>
+
+</body>
+</html>
