@@ -3,35 +3,61 @@
 <head>
 	<title></title>
 	<style>
+
+	html {
+		background-color:none;
+	}
+
 	canvas {
 		padding-left: 0;
    	 	padding-right: 0;
    		margin-left: auto;
    		margin-right: auto;
   		display: block;
-  		background-color:green;
+  		background-image:url("background.jpg");
+
+	}
+
+	#the-plane {
+		display:none;
 	}
 	</style>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
 <body>
+<span>Score:</span>
+<span id="score">1</span>
 
-<div>
 <canvas id="myCanvas" width="904" height="550p" style="border: 1px solid black;"></canvas>
-</div>
+
+<img src="plane.png" id="the-plane">
+<img src="bullet.png" width="50" height="20" id="bullet">
+
+
+<object height="0" width="0" data="theme.mp3" id="hide"></object>
 
 <script type="text/javascript">
 
 	canvas = document.getElementById("myCanvas");
 	ctx = canvas.getContext("2d");
 
+
 	var x = 50;
 	var y = 50;
 	isX = false;
 	isY = false;
-	var wallX = canvas.width;
-	var wallY = 0 ;
+	var score = 1;
+	var wall2speed = -4;
+	var down;
 
-	var update = 15;
+	var arr = [];
+	var arr2 = [];
+	var arr3 = [];
+
+	var lineLength = [];
+
+	var update = 20;
 
 	var directions = {
 		left: -1*update,
@@ -40,14 +66,19 @@
 		up: -1*update
 	}
 
+	
+
+
+
 	function Plane(){
 		this.draw= function(x,y){
 			this.x = x;
 			this.y = y;
 
+		var plane = document.getElementById("the-plane");
 		ctx.beginPath();
 		ctx.moveTo(this.x,this.y);
-		ctx.lineTo(this.x,this.y+70);
+		ctx.drawImage(plane,this.x,this.y);
 		ctx.stroke();
 
 		}
@@ -56,25 +87,101 @@
 	function getRandomNumber(min,max){
 		return (Math.random() * (max - min) + min)|0;
 	}
-	console.log(getRandomNumber(0, canvas.height));
 
-	wallY = 156;
 
-	function getRandomWall(){
-		this.line1 = function(x){
+	function Wall(x,y){
+		this.x=x ;
+		this.y = y;
 
+		this.move = function(){
+			this.x -= 3;
+		}
+
+		this.draw = function(ctx){
+			ctx.save();
+			ctx.lineWidth = 3;
 			ctx.beginPath();
-			ctx.moveTo(wallX, 0);
-			ctx.lineTo(wallX, wallY);
+			ctx.moveTo(this.x, 0);
+			ctx.lineTo(this.x, this.y);
 			ctx.stroke();
-			console.log(canvas.width-wallX);
+			for(i=0 ; i<106 ; i++)
+			{
+			if(plane.x+i == this.x && plane.y+20<this.y) {
+				alert("You lose!");
+				location.reload();
+			}
+			}
+			ctx.restore();
 		}
 	}
+
+		function Wall2(x,y){
+		this.x= x ;
+		this.y = y;
+
+		this.move = function(){
+			this.x -= 3;
+		}
+
+		this.draw = function(ctx){
+			ctx.save();
+			ctx.lineWidth = 3;
+			ctx.beginPath();
+			ctx.moveTo(this.x+400, canvas.height);
+			ctx.lineTo(this.x+400, this.y);
+			ctx.stroke();
+			for(i=0 ; i<106 ; i++)
+			{
+			if(plane.x-400+i == this.x && plane.y+40>this.y) {
+				alert("You lose!");
+				location.reload();
+			}
+			}
+			ctx.restore();
+		}
+	}
+
+
+	function Wall3(x,y){
+		this.x= x ;
+		this.y = y;
+
+		this.move = function(){
+			this.x -= 3;
+		}
+
+		this.draw = function(ctx){
+			ctx.save();
+			ctx.lineWidth = 3;
+			ctx.beginPath();
+			ctx.moveTo(this.x+800, 0);
+			ctx.lineTo(this.x+800, this.y);
+			ctx.moveTo(this.x+800, this.y+100);
+			ctx.lineTo(this.x+800, canvas.height);
+			ctx.stroke();
+			for(i=0 ; i<106 ; i++)
+			{
+			if((plane.x-800+i == this.x && plane.y+20<this.y) || (plane.x-800+i == this.x && plane.y+20>this.y+90)) { 
+				alert("You lose!");
+				location.reload();
+			}
+			}
+			ctx.restore();
+		}
+	}
+
+
+	function Shoot(x,y){
+		this.x = plane.x + 106;
+		this.y = plane.y + 20;
+
+		this.bullet
+	}
+
 	
 	var plane = new Plane();
 	plane.draw(x,y);
-	 var wall = new getRandomWall();
-	 wall.line1();
+
 
 	function animationFrame()
 	{
@@ -83,47 +190,81 @@
 
 		plane.draw(x,y);
 
-		window.onkeydown = function(ev){
-
-			//ako e natisnata <--
-			if(ev.keyCode==37 && plane.x>update) 
-			{
-				x  += directions.left;
-		
-			}
-
-			//ako e natisnata ^
-			else if(ev.keyCode==38 && plane.y > update)
-			{ 
-				y  += directions.up;
-			}
-
-			//ako e natisnata -->
-			else if(ev.keyCode==39 && plane.x < canvas.width-update)
-			{ 
-				x += directions.right;
-			}
-
-			//ako e natisnata dolna strelka
-			else if(ev.keyCode==40 && plane.y+70 < canvas.height-update)
-			{ 
-				y += directions.down;
-			}
-			else console.log("Not such a function");
+		for(var i = 0; i< arr.length; i++){
+			arr[i].move();
+			arr[i].draw(ctx);
 		}
-		// STOP animaciq na samoleta
 
-		wall.line1(wallX);
-		wallX -= 2;
+		for(var j = 0; j< arr2.length; j++){
+			arr2[j].move();
+			arr2[j].draw(ctx);
+		}
+
+		for(var k = 0; k< arr2.length; k++){
+			arr3[k].move();
+			arr3[k].draw(ctx);
+		}
+
+		score += 1;
+
+		$("#score").empty();
+		$("#score").append(i);
+
 		
-
-
 		requestAnimationFrame(animationFrame);	
 
 	}
+	window.onkeydown = function(ev){
+		//ako e natisnata <--
+		if(ev.keyCode==37 && plane.x>update) 
+		{
+			x  += directions.left;
+	
+		}
+
+		//ako e natisnata ^
+		else if(ev.keyCode==38 && plane.y > update)
+		{ 
+			y  += directions.up;
+		}
+
+		//ako e natisnata -->
+		else if(ev.keyCode==39 && plane.x < canvas.width-update-110)
+		{ 
+			x += directions.right;
+		}
+
+		//ako e natisnata dolna strelka
+		else if(ev.keyCode==40 && plane.y+70 < canvas.height-update+30)
+		{ 
+			y += directions.down;
+		}
+	}
 
 	requestAnimationFrame(animationFrame);	
+		
+		setInterval(function(){
 
+
+		var x = ctx.canvas.width;
+		
+		var x1 = x;
+		var y1 = getRandomNumber(0, canvas.height-100);
+
+		var x2 = x;
+		var y2 = getRandomNumber(80, canvas.height);
+
+		var x3 = x;
+		var y3 = getRandomNumber(0, canvas.height-100);
+
+		var wall = new Wall(x1, y1);
+		arr.push(wall);
+		var wall2 = new Wall2(x2,y2);
+		arr2.push(wall2);
+		var wall3 = new Wall3(x3,y3);
+		arr3.push(wall3);
+
+	}, 10500);
 </script>
 
 </body>
